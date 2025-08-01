@@ -4,28 +4,27 @@ output: html_notebook
 ---
 
 ## Packages
-
 ```{r}
 library(dplyr)
 library(tidyr)
 library(readr)
 library(zoo)
 library(lubridate)
+library(stringr)
 ```
 
 ## Load Raw Data
-
 ```{r}
 cpi_raw <- read_csv("Consumers-price-index,-annual-percentage-change,-June-2021–June-2025-quarters.csv", show_col_types = FALSE)
 ocr_raw <- read_csv("Offical Cash Rate (OCR) & 90 day bank bill rate (2).csv", show_col_types = FALSE)
 b1_raw  <- read_csv("Trade Weighted Index (TWI)  17 Currency Basket - B1.csv", show_col_types = FALSE)
 b3_raw  <- read_csv("Floating mortgage rate vs Six-month term deposit rate - B3.csv", show_col_types = FALSE)
+hm1_raw <- read_csv("hm1.csv", skip = 4, show_col_types = FALSE)
 ```
 
 ## Clean & Transform Each Dataset
 
 ### CPI (Quarterly to Monthly)
-
 ```{r}
 cpi_df <- cpi_raw %>%
   rename(
@@ -33,7 +32,7 @@ cpi_df <- cpi_raw %>%
     CPI_pct = `Percentage change`
   ) %>%
   mutate(
-    Date = my(Period),  # robust to locale issues
+    Date = my(Period),
     month = floor_date(Date, "month")
   ) %>%
   select(month, CPI_pct) %>%
@@ -43,7 +42,6 @@ cpi_df <- cpi_raw %>%
 ```
 
 ### OCR (Official Cash Rate)
-
 ```{r}
 ocr_df <- ocr_raw %>%
   rename(Date = 1, Value = 2) %>%
@@ -52,12 +50,11 @@ ocr_df <- ocr_raw %>%
     month = floor_date(Date, "month")
   ) %>%
   group_by(month) %>%
-  summarise(OCR = dplyr::last(Value, na_rm = TRUE)) %>%  # Correct spelling: na_rm not na.rm
+  summarise(OCR = dplyr::last(Value, na_rm = TRUE)) %>%
   ungroup()
 ```
 
 ### TWI (Trade Weighted Index)
-
 ```{r}
 b1_df <- b1_raw %>%
   rename(TWI = `TWI - 17 currency basket`) %>%
@@ -71,7 +68,6 @@ b1_df <- b1_raw %>%
 ```
 
 ### Mortgage & Deposit Rates
-
 ```{r}
 b3_df <- b3_raw %>%
   rename(
@@ -90,10 +86,78 @@ b3_df <- b3_raw %>%
   ungroup()
 ```
 
+### HM1 (Core Inflation & House Prices)
+```{r}
+hm1_df <- hm1_raw %>%
+  select(
+    Date = 1,
+    CoreInflation = 31,
+    HousePriceGrowth = 34
+  ) %>%
+  mutate(
+    Date = as.character(Date),
+    Date = case_when(
+      is.na(Date) | Date == "" | Date == "NA" ~ as.Date(NA),
+      !is.na(as.Date(Date, tryFormats = c("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y"))) ~ 
+        as.Date(Date, tryFormats = c("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y")),
+      str_detect(Date, "^\\d{5}$") ~ as.Date(as.numeric(Date), origin = "1899-12-30"),
+      str_detect(Date, "^\\w{3}\\s\\d{4}$") ~ as.Date(paste0("01 ", Date), format = "%d %b %Y"),
+      TRUE ~ as.Date(NA)
+    ),
+    month = floor_date(Date, "month")
+  ) %>%
+  filter(!is.na(Date), year(Date) >= 2021) %>%
+  select(month, CoreInflation, HousePriceGrowth) %>%
+  mutate(
+    CoreInflation = as.numeric(CoreInflation),
+    HousePriceGrowth = as.numeric(HousePriceGrowth)
+  ) %>%
+  filter(!(is.na(CoreInflation) & is.na(HousePriceGrowth))) %>%
+  complete(month = seq.Date(from = min(month, na.rm = TRUE), 
+                           to = max(month, na.rm = TRUE), 
+                           by = "month")) %>%
+  arrange(month) %>%
+  mutate(
+    CoreInflation = zoo::na.approx(CoreInflation, na.rm = FALSE),
+    HousePriceGrowth = zoo::na.approx(HousePriceGrowth, na.rm = FALSE)
+  )
+```
+
+### Unemployment Rate
+```{r}
+unemployment_df <- read_csv(
+  "unemployment_rate.csv", 
+  skip = 3,
+  col_names = c("Period", "UnemploymentRate"),
+  col_types = cols(
+    Period = col_character(),
+    UnemploymentRate = col_double()
+  ),
+  show_col_types = FALSE
+) %>%
+  filter(!is.na(UnemploymentRate), 
+         !is.na(Period),
+         UnemploymentRate > 0,
+         UnemploymentRate < 20) %>%
+  mutate(
+    Date = yq(Period),
+    month = floor_date(Date, "month")
+  ) %>%
+  filter(!is.na(Date), year(Date) >= 2021) %>%
+  select(month, UnemploymentRate) %>%
+  complete(month = seq.Date(from = min(month, na.rm = TRUE), 
+                           to = max(month, na.rm = TRUE), 
+                           by = "month")) %>%
+  arrange(month) %>%
+  mutate(UnemploymentRate = zoo::na.approx(UnemploymentRate, na.rm = FALSE))
+```
+
 ## Merge the Post-Pipeline processed data
 ```{r}
 full_data <- ocr_df %>%
   left_join(cpi_df, by = "month") %>%
+  left_join(unemployment_df, by = "month") %>%
+  left_join(hm1_df, by = "month") %>%
   left_join(b1_df, by = "month") %>%
   left_join(b3_df, by = "month") %>%
   arrange(month)
@@ -107,7 +171,6 @@ full_data <- full_data %>%
 ```
 
 ## Create Target Variable
-
 ```{r}
 full_data <- full_data %>%
   mutate(
@@ -121,10 +184,8 @@ full_data <- full_data %>%
 ```
 
 ## Final Dataset Overview
-
 ```{r}
 print(head(full_data, 12))
 summary(full_data)
+write_csv(full_data, "ocr_prediction_enhanced.csv")
 ```
-
----
