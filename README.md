@@ -99,21 +99,14 @@ This project develops a comprehensive machine learning system to predict the Res
 nz-ocr-prediction/
 ├── data/
 │   ├── raw/                          # Original CSV files from official sources
-│   ├── processed/                    # Cleaned and engineered datasets
-│   └── powerbi/                      # Power BI compatible exports
+│   └── processed/                    # Cleaned and engineered datasets
 ├── src/
 │   ├── data_collection.R            # R data processing pipeline
-│   ├── ocr_prediction_models.py     # Python ML implementation
-│   └── ensemble_methods.py          # Advanced ensemble techniques
-├── notebooks/
-│   └── nz_economic_indicators.Rmd   # Exploratory data analysis
+│   └── ocr_prediction_models.py     # Python ML implementation
 ├── outputs/
-│   ├── model_performance/           # Model evaluation plots
-│   ├── eda_visualizations/          # Economic data analysis
+│   ├── model_performance_plots/     # Generated visualization files
+│   ├── eda_visualizations/          # Economic data analysis plots
 │   └── ocr_prediction_enhanced.csv  # Final processed dataset
-├── docs/
-│   ├── technical_report.pdf         # Comprehensive analysis report
-│   └── methodology.md               # Detailed technical methods
 └── README.md
 ```
 
@@ -162,18 +155,6 @@ The project generates comprehensive visualizations including:
 - **Investment Strategy**: Sector rotation based on policy predictions
 - **Portfolio Management**: Duration optimization using OCR forecasts
 
-## Future Enhancements
-
-### Technical Extensions
-- **Real-time Implementation**: API integration for live predictions
-- **Deep Learning**: LSTM/Transformer models for complex patterns
-- **Text Analysis**: NLP on RBNZ policy communications
-
-### Data Expansion
-- **Higher Frequency**: Weekly/daily economic indicators
-- **International Variables**: Global commodity prices, foreign interest rates
-- **Alternative Data**: Satellite-based economic activity indicators
-
 ## Usage Instructions
 
 ### Prerequisites
@@ -182,7 +163,7 @@ The project generates comprehensive visualizations including:
 install.packages(c("dplyr", "lubridate", "tidyr", "zoo", "readr"))
 
 # Python packages  
-pip install pandas numpy scikit-learn matplotlib seaborn imbalanced-learn
+pip install pandas numpy scikit-learn matplotlib seaborn
 ```
 
 ### Running the Analysis
@@ -190,18 +171,26 @@ pip install pandas numpy scikit-learn matplotlib seaborn imbalanced-learn
 # 1. Data processing (R)
 Rscript src/data_collection.R
 
-# 2. Machine learning pipeline (Python)
+# 2. Machine learning pipeline (Python)  
 python src/ocr_prediction_models.py
-
-# 3. Advanced ensemble methods
-python src/ensemble_methods.py
 ```
 
-## Documentation
+## Future Enhancements
 
-- **Technical Report**: [docs/technical_report.pdf](docs/technical_report.pdf) - Comprehensive analysis with economic interpretation
-- **Methodology**: [docs/methodology.md](docs/methodology.md) - Detailed technical implementation
-- **Data Dictionary**: [docs/data_dictionary.json](docs/data_dictionary.json) - Variable definitions and sources
+### Technical Extensions
+- **Real-time Implementation**: API integration for live predictions
+- **Deep Learning**: LSTM/Transformer models for complex patterns
+- **Advanced Ensemble Methods**: Additional imbalanced learning techniques
+
+### Documentation Enhancements
+- **Technical Report**: Comprehensive LaTeX analysis document
+- **Interactive Dashboard**: Power BI visualization for policy analysis
+- **API Documentation**: RESTful service for real-time predictions
+
+### Data Expansion
+- **Higher Frequency**: Weekly/daily economic indicators
+- **International Variables**: Global commodity prices, foreign interest rates
+- **Alternative Data**: Satellite-based economic activity indicators
 
 ## Limitations & Disclaimers
 
