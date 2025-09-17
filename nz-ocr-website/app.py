@@ -795,7 +795,7 @@ def technical_details_page():
     """)
     
     # Technical stack
-    st.subheader("⚙️ Technology Stack & Architecture")
+    st.subheader("Technology Stack & Architecture")
     
     col1, col2, col3 = st.columns(3)
     
@@ -821,7 +821,7 @@ def technical_details_page():
     
     with col3:
         st.markdown("""
-        **🌐 Deployment**
+        **Deployment**
         - Streamlit framework
         - Plotly interactive visualizations
         - Cloud deployment ready
@@ -830,7 +830,7 @@ def technical_details_page():
         """)
     
     # Model architecture
-    st.subheader("🏗️ Model Architecture")
+    st.subheader("Model Architecture")
     
     st.code("""
 Raw Economic Data (RBNZ, Stats NZ, REINZ)
@@ -873,7 +873,7 @@ Prediction & Analysis
     
     with col2:
         st.markdown("""
-        **🎲 Classification Results**
+        **Classification Results**
         - **Overall Accuracy**: 75% (Ensemble)
         - **Class Distribution**: 66% same, 27% up, 7% down
         - **F1-Score**: 0.72 (weighted average)
@@ -882,7 +882,7 @@ Prediction & Analysis
         """)
     
     # Code samples
-    st.subheader("💻 Code Implementation Examples")
+    st.subheader("Code Implementation Examples")
     
     tab1, tab2, tab3 = st.tabs(["Feature Engineering", "Model Training", "Prediction Pipeline"])
     
@@ -1075,7 +1075,7 @@ scenarios = {
         """, language='python')
     
     # Data sources and validation
-    st.subheader("📚 Data Sources & Methodology")
+    st.subheader("Data Sources & Methodology")
     
     col1, col2 = st.columns(2)
     
@@ -1098,14 +1098,14 @@ scenarios = {
     
     with col2:
         st.markdown("""
-        ### 🔬 Validation Framework
-        
+        ### Validation Framework
+
         **Model Validation:**
         - 80/20 train-test split (temporal)
         - Cross-validation on training set
         - Out-of-sample performance testing
         - Economic reasonableness checks
-        
+
         **Robustness Testing:**
         - Sensitivity analysis on features
         - Structural break detection
@@ -1114,7 +1114,7 @@ scenarios = {
         """)
     
     # Future enhancements
-    st.subheader("🚀 Future Development Roadmap")
+    st.subheader("Future Development Roadmap")
     
     col1, col2 = st.columns(2)
     
@@ -1130,7 +1130,7 @@ scenarios = {
     
     with col2:
         st.markdown("""
-        ### 🌐 Application Extensions
+        ### Application Extensions
         - **International Comparison**: Multi-country analysis
         - **Policy Communication**: NLP analysis of RBNZ statements
         - **Market Integration**: Financial market reaction modeling
@@ -1146,7 +1146,7 @@ def main():
     st.sidebar.markdown("---")
     
     page = st.sidebar.selectbox(
-        "🧭 Navigate to:",
+        "Navigate to:",
         [
             "Executive Summary",
             "Economic Analysis",
@@ -1160,18 +1160,18 @@ def main():
     # Add project info in sidebar
     st.sidebar.markdown("---")
     st.sidebar.markdown("""
-    ### 📖 About This Project
-    
+    ### About This Project
+
     **Research Period**: 2021-2025  
     **Best Model**: Linear Regression (98.2% R²)  
     **Prediction Horizon**: 1 month  
     **Features**: 22 engineered indicators  
-    
+
     ### Author
     **Marco Mojicevic**  
-    Data Scientist & Economic Researcher  
+    Data Scientist & ML Engineer  
     Wellington, New Zealand
-    
+
     [GitHub](https://github.com/GiornoSolos) | [LinkedIn](https://linkedin.com/in/marco-mojicevic)
     """)
     
