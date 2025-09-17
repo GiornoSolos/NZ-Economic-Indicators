@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="NZ OCR Prediction System",
     page_icon=None,
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="expanded"
 )
 
 # Custom CSS for professional styling
@@ -129,11 +129,11 @@ def executive_summary_page():
         )
         st.plotly_chart(fig_ocr_mini, use_container_width=True)
         
-        st.info("""
-            **Policy Persistence Dominates**
+    st.info("""
+    **Policy Persistence Dominates**
 
-            Previous OCR levels account for 48% of prediction power, supporting the gradual adjustment approach and effectiveness of forward guidance.
-            """)
+    Previous OCR levels account for 48% of prediction power, supporting gradual policy adjustment and forward guidance effectiveness.
+    """)
     
     with col2:
         # Inflation chart
@@ -146,17 +146,17 @@ def executive_summary_page():
         fig_cpi_mini.add_hline(y=3, line_dash="dash", line_color="green", annotation_text="Target Upper (3%)")
         st.plotly_chart(fig_cpi_mini, use_container_width=True)
         
-        st.success("""
-            **Dual Mandate Findings**
+    st.success("""
+    **Dual Mandate Findings**
 
-            Model captures inflation dynamics while incorporating employment considerations in policy decisions.
-            """)
+    Model captures inflation dynamics while incorporating employment considerations in policy decisions.
+    """)
     
     # Research impact
     st.markdown("## Research Impact & Applications")
-    
+
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         st.markdown("""
         **Policy Applications**
@@ -165,7 +165,7 @@ def executive_summary_page():
         - Communication enhancement
         - International framework adaptation
         """)
-    
+
     with col2:
         st.markdown("""
         **Financial Markets**
@@ -174,7 +174,7 @@ def executive_summary_page():
         - Investment strategy guidance
         - Portfolio duration management
         """)
-    
+
     with col3:
         st.markdown("""
         **Academic Contributions**
@@ -186,13 +186,11 @@ def executive_summary_page():
 
 def economic_analysis_page(df):
     st.title("Economic Analysis Dashboard")
-
-    st.markdown(
-        """
-    Explore the economic relationships and monetary policy transmission mechanisms
-    that drive systematic interest rate decision-making.
-    """
-    )
+    
+    st.markdown("""
+    Explore the economic relationships and monetary policy transmission mechanisms 
+    that drive RBNZ's systematic approach to interest rate decisions.
+    """)
     
     # Interactive time series plot
     st.subheader("OCR and Economic Indicators Over Time")
@@ -311,7 +309,7 @@ def economic_analysis_page(df):
         - **Positive OCR-Inflation**: Higher rates respond to inflation
         - **Positive OCR-Unemployment**: Phillips curve trade-off
         - **Negative OCR-Housing**: Monetary transmission effect
-        - **Policy transmission to market rates**: Policy affects broader interest rates
+        - **Perfect OCR-Interest Rate**: Policy transmission mechanism
         """
         )
     
@@ -360,12 +358,11 @@ def economic_analysis_page(df):
 
 def model_performance_page():
     st.title("Model Performance Analysis")
-
-    st.markdown(
-        """
-    Comprehensive evaluation of machine learning models for OCR prediction, demonstrating accuracy and ensemble robustness.
-    """
-    )
+    
+    st.markdown("""
+    Comprehensive evaluation of machine learning models for OCR prediction, 
+    demonstrating exceptional accuracy and robust ensemble methods.
+    """)
     
     # Performance metrics comparison
     performance_df = create_model_performance_data()
@@ -460,8 +457,17 @@ def model_performance_page():
         x=actual, 
         y=predicted,
         title=f"Model Predictions vs Actual OCR Values (R² = {r2:.3f})",
-        labels={'x': 'Actual OCR (%)', 'y': 'Predicted OCR (%)'},
-        trendline='ols'
+        labels={'x': 'Actual OCR (%)', 'y': 'Predicted OCR (%)'}
+    )
+    
+    # Add manual trend line using numpy
+    z = np.polyfit(actual, predicted, 1)
+    p = np.poly1d(z)
+    fig_scatter.add_trace(
+        go.Scatter(x=sorted(actual), y=p(sorted(actual)), 
+                  mode='lines', 
+                  name='Trend Line',
+                  line=dict(dash='dash', color='orange', width=2))
     )
     
     # Add perfect prediction line
@@ -551,47 +557,48 @@ def feature_importance_page():
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(
-            """
+        st.markdown("""
     ### Policy Persistence (48.1%)
         - **OCR_lag1**: 28.7% - Previous month's rate
         - **Current OCR**: 19.4% - Policy continuity
-
-        **Economic Interpretation**: Gradual policy adjustment and inertia explain a substantial share of predictive power, supporting predictable policy paths.
-        """
-        )
         
-        st.markdown(
-            """
+        **Economic Interpretation**: RBNZ follows gradual adjustment 
+        approach, with policy inertia accounting for nearly half of 
+        prediction power. This validates the central bank's commitment 
+        to clear communication and predictable policy paths.
+        """)
+        
+        st.markdown("""
     ### Inflation Targeting (22.3%)
         - **CPI Inflation**: 15.6% - Headline inflation measure
         - **Core Inflation**: 6.7% - Underlying price pressures
-
-        **Economic Interpretation**: Inflation measures are primary drivers of policy responses, consistent with price stability objectives.
-        """
-        )
+        
+        **Economic Interpretation**: Combined inflation measures 
+        represent the primary mandate driver, confirming RBNZ's 
+        systematic response to price stability objectives.
+        """)
     
     with col2:
-        st.markdown(
-            """
+        st.markdown("""
     ### Transmission Mechanisms (19.1%)
         - **Floating Mortgage**: 8.9% - Policy pass-through
         - **Interest Rate Spreads**: 5.4% - Market conditions
         - **Term Deposits**: 4.8% - Savings rates
-
-        **Economic Interpretation**: Transmission variables highlight the banking system's role in passing policy rates into the economy.
-        """
-        )
         
-        st.markdown(
-            """
-        ### Employment & Housing (8.0%)
+        **Economic Interpretation**: Strong importance of transmission 
+        variables confirms effective monetary policy channels through 
+        banking system and interest rate pass-through.
+        """)
+        
+        st.markdown("""
+    ### Employment & Housing (8.0%)
         - **Unemployment Rate**: 4.2% - Dual mandate component
         - **House Price Growth**: 3.8% - Financial stability
-
-        **Economic Interpretation**: Employment and housing play a secondary but meaningful role in policy formulation.
-        """
-        )
+        
+        **Economic Interpretation**: Secondary but meaningful role 
+        of employment and housing validates RBNZ's broader economic 
+        considerations beyond pure inflation targeting.
+        """)
     
     # Detailed feature table
     st.subheader("Complete Feature Analysis")
@@ -667,7 +674,7 @@ def predictions_page(df):
         predicted_change = np.clip(predicted_change, -0.75, 0.75)
         predicted_ocr = max(0, min(8, current_ocr + predicted_change))
 
-        # Policy direction (textual labels)
+        # Policy direction (text labels)
         if predicted_change > 0.15:
             direction = "TIGHTEN"
             direction_color = "red"
@@ -749,29 +756,35 @@ def predictions_page(df):
         st.plotly_chart(fig_scenarios, use_container_width=True)
         
         # Policy recommendation
-        st.markdown("### Policy Recommendation")
+    st.markdown("### Policy Recommendation")
 
-        if predicted_change > 0.25:
-            st.error("""
-            **Tightening Recommended**: Economic conditions suggest rate increase needed.
+    if predicted_change > 0.25:
+        st.error(
+            """
+            **Tightening Recommended**: Economic conditions suggest a rate increase may be appropriate.
             - Inflation above target requiring policy response
-            - Consider 25-50bp increase depending on urgency
+            - Consider 25-50 basis points increase depending on urgency
             - Monitor employment impacts closely
-            """)
-        elif predicted_change < -0.25:
-            st.success("""
-            **Easing Recommended**: Economic conditions suggest rate decrease needed.  
-            - Economic weakness requires monetary stimulus
-            - Consider 25-50bp decrease to support growth
+            """
+        )
+    elif predicted_change < -0.25:
+        st.success(
+            """
+            **Easing Recommended**: Economic conditions suggest a rate decrease may be appropriate.
+            - Economic weakness may require monetary stimulus
+            - Consider 25-50 basis points decrease to support growth
             - Watch for inflation expectations anchoring
-            """)
-        else:
-            st.info("""
+            """
+        )
+    else:
+        st.info(
+            """
             **Hold Recommended**: Current policy stance appears appropriate.
             - Economic conditions balanced near targets
             - Maintain current rate and assess data flow
             - Prepare for gradual adjustments as needed
-            """)
+            """
+        )
 
 def technical_details_page():
     st.title("Technical Implementation Details")
